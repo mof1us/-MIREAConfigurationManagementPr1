@@ -1,54 +1,56 @@
 package org.example
 
+import org.example.GUI.ConsoleGUI
+import org.example.GUI.consolePrint
+import org.example.GUI.printIndicator
+import java.awt.EventQueue
 import java.lang.System.exit
 import java.util.Scanner
 import kotlin.system.exitProcess
 
 class Console {
     val scanner = Scanner(System.`in`)
+    val consoleParams = ConsoleParams()
+    val frame = ConsoleGUI("Console GUI interface")
 
+    constructor() {
+    }
 
     fun greeting() {
-        println(
-            "\n" +
-                    "███╗░░░███╗░█████╗░███████╗░░███╗░░██╗░░░██╗░██████╗\n" +
-                    "████╗░████║██╔══██╗██╔════╝░████║░░██║░░░██║██╔════╝\n" +
-                    "██╔████╔██║██║░░██║█████╗░░██╔██║░░██║░░░██║╚█████╗░\n" +
-                    "██║╚██╔╝██║██║░░██║██╔══╝░░╚═╝██║░░██║░░░██║░╚═══██╗\n" +
-                    "██║░╚═╝░██║╚█████╔╝██║░░░░░███████╗╚██████╔╝██████╔╝\n" +
-                    "╚═╝░░░░░╚═╝░╚════╝░╚═╝░░░░░╚══════╝░╚═════╝░╚═════╝░\n" +
-                    "\n" +
-                    "░█████╗░░█████╗░███╗░░██╗░██████╗░█████╗░██╗░░░░░███████╗\n" +
-                    "██╔══██╗██╔══██╗████╗░██║██╔════╝██╔══██╗██║░░░░░██╔════╝\n" +
-                    "██║░░╚═╝██║░░██║██╔██╗██║╚█████╗░██║░░██║██║░░░░░█████╗░░\n" +
-                    "██║░░██╗██║░░██║██║╚████║░╚═══██╗██║░░██║██║░░░░░██╔══╝░░\n" +
-                    "╚█████╔╝╚█████╔╝██║░╚███║██████╔╝╚█████╔╝███████╗███████╗\n" +
-                    "░╚════╝░░╚════╝░╚═╝░░╚══╝╚═════╝░░╚════╝░╚══════╝╚══════╝"
-        );
+        consolePrint(frame, "Welcome to Mof1us GUI command line")
+
     }
 
     fun exec() {
         greeting()
-        var line = ""
-        while (true) {
-            print("VFS@root:~$ ")
-            line = scanner.nextLine();
-            val result = parseCommand(line)
-            println(result.resultText)
-            result.afterCommand()
-        }
+        printIndicator(frame, { command -> parseCommand(command) })
+
     }
 
-    fun parseCommand(command: String): CommandResultEntity {
-        when {
-            command == "exit" -> return CommandResultEntity(false, "off...", { exitProcess(0) })
-            command.startsWith("echo") -> return CommandResultEntity(
+    fun sendResult(commandResult: CommandResultEntity) {
+        consolePrint(frame, commandResult.resultText)
+        commandResult.afterCommand()
+        printIndicator(frame, { command -> parseCommand(command) })
+    }
+
+    fun parseCommand(command: String) {
+        val result = when {
+            command == "exit" -> CommandResultEntity(false, "off...", { exitProcess(0) })
+            command.startsWith("echo") -> CommandResultEntity(
                 false,
                 CommandResultEntity.processString(command.substringAfter("echo ")),
                 { })
-            command == "ls" -> return CommandResultEntity(false, "ls", {})
-            command == "cd" -> return CommandResultEntity(false, "cd [PATH]", {})
-        }
-        return CommandResultEntity(true, "Unknown command", {})
+
+            command == "ls" -> CommandResultEntity(false, "ls", {})
+            command == "cd" -> CommandResultEntity(false, "cd [PATH]", {})
+            command == "params" -> CommandResultEntity(false, consoleParams.toString(), {})
+            command.startsWith("setp") -> {
+                val flags = command.substringAfter("setp")
+            }
+
+            else -> CommandResultEntity(true, "Unknown command", {})
+        } as CommandResultEntity
+        sendResult(result)
     }
 }
+
