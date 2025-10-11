@@ -7,6 +7,9 @@ class ConsoleParams {
     fun getStartScript(): String {
         return startScriptPath
     }
+    fun getRealPath(): String {
+        return realPath
+    }
 
     fun setRealPath(realPath: String) {
         this.realPath = realPath

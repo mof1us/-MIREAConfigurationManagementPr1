@@ -15,20 +15,23 @@ import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
 fun consolePrint(frame: ConsoleGUI, text: String) {
-    frame.contentPane.background = Color(0, 0, 0)
-    frame.isVisible = true
-    val l = JTextArea(text)
-    l.foreground = Color(255, 255, 255)
-    l.background = Color(0, 0, 0)
-    l.font = Font("Monospaced", Font.BOLD, 20)
-    l.isEditable = false
-    l.preferredSize = Dimension(l.preferredSize.width, 30)
+    text.split("\\n").forEach {
+        frame.contentPane.background = Color(0, 0, 0)
+        frame.isVisible = true
+        val l = JTextArea(it)
+        l.foreground = Color(255, 255, 255)
+        l.background = Color(0, 0, 0)
+        l.font = Font("Monospaced", Font.BOLD, 20)
+        l.isEditable = false
+        l.preferredSize = Dimension(l.preferredSize.width, 30)
 
-    l.lineWrap = true
-    l.wrapStyleWord = true
-    l.preferredSize = Dimension(l.preferredSize.width, l.preferredSize.height)
-    l.maximumSize = Dimension(Integer.MAX_VALUE, l.preferredSize.height) // Фиксируем высоту
-    frame.addComponent(l)
+        l.lineWrap = true
+        l.wrapStyleWord = true
+        l.preferredSize = Dimension(l.preferredSize.width, l.preferredSize.height)
+        l.maximumSize = Dimension(Integer.MAX_VALUE, l.preferredSize.height) // Фиксируем высоту
+        frame.addComponent(l)
+    }
+
 }
 
 
