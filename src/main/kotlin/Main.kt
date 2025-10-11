@@ -16,14 +16,19 @@ import javax.swing.*;
 //
 //}
 
-
-fun main() {
-
-    val console = Console();
-
-
-
+//  ./gradlew run --args="--path=somePath --script=C:\Users\anton\Documents\Учеба\3 семестр\Конфигурационка\start.sh"
+fun main(args: Array<String>) {
+    val consoleParams = ConsoleParams()
+    args.forEach { arg ->
+        if (arg.startsWith("--path=")) {
+            val path = arg.substringAfter("=")
+            consoleParams.setRealPath(path)
+        }
+        else if (arg.startsWith("--script=")) {
+            val scriptPath = arg.substringAfter("=")
+            consoleParams.setStartScriptPath(scriptPath)
+        }
+    }
+    val console = Console(consoleParams=consoleParams);
     console.exec()
-
-
 }
